@@ -1,5 +1,6 @@
 package com.phoenix.amazon.AmazonBackend.services;
 
+import com.phoenix.amazon.AmazonBackend.entity.Address;
 import com.phoenix.amazon.AmazonBackend.entity.Category;
 import com.phoenix.amazon.AmazonBackend.entity.PassWordSet;
 import com.phoenix.amazon.AmazonBackend.entity.Users;
@@ -244,6 +245,26 @@ public abstract class AbstractService extends AbstractValidationService {
                         .primaryEmail(oldUser.getPrimaryEmail())
                         .secondaryEmail(oldUser.getSecondaryEmail())
                         .gender(oldUser.getGender())
+                        .about(oldUser.getAbout())
+                        .password(oldUser.getPassword())
+                        .previous_password_set(oldUser.getPrevious_password_set())
+                        .lastSeen(oldUser.getLastSeen())
+                        .build();
+            }
+            case SET_ADDRESS -> {
+                Set<Address> oldAddressSet = oldUser.getAddress_set();
+                if(CollectionUtils.isEmpty(oldAddressSet)) oldAddressSet=new HashSet<>();
+                oldAddressSet.addAll(newUser.getAddress_set());
+                return new Users.builder()
+                        .address_set(oldAddressSet)
+                        .userId(oldUser.getUserId())
+                        .userName(oldUser.getUserName())
+                        .firstName(oldUser.getFirstName())
+                        .lastName(oldUser.getLastName())
+                        .primaryEmail(oldUser.getPrimaryEmail())
+                        .secondaryEmail(oldUser.getSecondaryEmail())
+                        .gender(oldUser.getGender())
+                        .profileImage(oldUser.getProfileImage())
                         .about(oldUser.getAbout())
                         .password(oldUser.getPassword())
                         .previous_password_set(oldUser.getPrevious_password_set())

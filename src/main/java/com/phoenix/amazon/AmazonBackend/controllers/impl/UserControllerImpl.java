@@ -1,6 +1,7 @@
 package com.phoenix.amazon.AmazonBackend.controllers.impl;
 
 import com.phoenix.amazon.AmazonBackend.controllers.IUserController;
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserCreatedRequestDto;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ApiResponse;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ImageResponseMessages;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PageableResponse;
@@ -9,6 +10,7 @@ import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PasswordResponseMessage
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.PasswordUpdateDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UpdateUserDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.UserCreatedResponseDto;
 import com.phoenix.amazon.AmazonBackend.exceptions.BadApiRequestExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserNotFoundExceptions;
@@ -44,8 +46,8 @@ public class UserControllerImpl implements IUserController {
      * @throws UserNotFoundExceptions,UserExceptions,BadApiRequestExceptions,IOException -list of exceptions being thrown
      */
     @Override
-    public ResponseEntity<UserDto> createUser(final UserDto user) throws UserNotFoundExceptions, UserExceptions, BadApiRequestExceptions, IOException {
-        UserDto userDto = userService.createUserService(user);
+    public ResponseEntity<UserCreatedResponseDto> createUser(final UserCreatedRequestDto createUserRequestDto) throws UserNotFoundExceptions, UserExceptions, BadApiRequestExceptions, IOException {
+        UserCreatedResponseDto userDto = userService.createUserService(createUserRequestDto);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 

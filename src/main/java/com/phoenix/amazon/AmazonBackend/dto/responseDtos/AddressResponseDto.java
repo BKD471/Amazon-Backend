@@ -1,28 +1,32 @@
-package com.phoenix.amazon.AmazonBackend.dto.requestDtos;
+package com.phoenix.amazon.AmazonBackend.dto.responseDtos;
 
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.AddressType;
 
-public record AddressDto(String addressId,
-                         String mobileNumber,
-                         String addressLineNumberOne,
-                         String addressLineNumberTwo,
-                         AddressType addressType,
-                         String pinCode,
-                         String townOrCity,
-                         String district,
-                         String state,
-                         String country) {
+public record AddressResponseDto(String addressId,
+                                 String mobileNumber,
+                                 String addressLineNumberOne,
+                                 String addressLineNumberTwo,
+                                 AddressType addressType,
+                                 String pinCode,
+                                 String townOrCity,
+                                 String latitude,
+                                 String longitude,
+                                 String district,
+                                 String state,
+                                 String country) {
 
-    public AddressDto(String addressId,
-                      String mobileNumber,
-                      String addressLineNumberOne,
-                      String addressLineNumberTwo,
-                      AddressType addressType,
-                      String pinCode,
-                      String townOrCity,
-                      String district,
-                      String state,
-                      String country) {
+    public AddressResponseDto(String addressId,
+                              String mobileNumber,
+                              String addressLineNumberOne,
+                              String addressLineNumberTwo,
+                              AddressType addressType,
+                              String pinCode,
+                              String townOrCity,
+                              String latitude,
+                              String longitude,
+                              String district,
+                              String state,
+                              String country) {
         this.addressId = addressId;
         this.mobileNumber = mobileNumber;
         this.addressLineNumberOne = addressLineNumberOne;
@@ -30,6 +34,8 @@ public record AddressDto(String addressId,
         this.addressType = addressType;
         this.pinCode = pinCode;
         this.townOrCity = townOrCity;
+        this.latitude=latitude;
+        this.longitude=longitude;
         this.district = district;
         this.state = state;
         this.country = country;
@@ -44,6 +50,8 @@ public record AddressDto(String addressId,
         private String pinCode;
         private String townOrCity;
         private String district;
+        private String latitude;
+        private String longitude;
         private String state;
         private String country;
 
@@ -85,6 +93,16 @@ public record AddressDto(String addressId,
             return this;
         }
 
+        public builder latitude(final String latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public builder longitude(final String longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
         public builder district(final String district) {
             this.district = district;
             return this;
@@ -101,13 +119,15 @@ public record AddressDto(String addressId,
         }
 
 
-        public AddressDto build() {
-            return new AddressDto(addressId,
+        public AddressResponseDto build() {
+            return new AddressResponseDto(addressId,
                     mobileNumber,
                     addressLineNumberOne,
                     addressLineNumberTwo,
                     addressType,
                     pinCode,
+                    latitude,
+                    longitude,
                     townOrCity,
                     district,
                     state,

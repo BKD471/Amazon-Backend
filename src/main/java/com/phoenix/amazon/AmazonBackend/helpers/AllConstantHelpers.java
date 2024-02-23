@@ -15,7 +15,8 @@ public class AllConstantHelpers {
     }
 
     public enum USER_FIELDS {
-        USER_NAME, FIRST_NAME, LAST_NAME, PRIMARY_EMAIL, SECONDARY_EMAIL, GENDER, LAST_SEEN, ABOUT, PASSWORD, PROFILE_IMAGE
+        USER_NAME, FIRST_NAME, LAST_NAME, PRIMARY_EMAIL, SECONDARY_EMAIL, GENDER, LAST_SEEN, ABOUT, PASSWORD, PROFILE_IMAGE,
+        SET_ADDRESS
 
     }
 
@@ -61,6 +62,6 @@ public class AllConstantHelpers {
     }
 
     public enum AddressType{
-        HOME,BUSINESS
+        HOME,OFFICE
     }
 }

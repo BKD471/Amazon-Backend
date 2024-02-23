@@ -1,15 +1,21 @@
 package com.phoenix.amazon.AmazonBackend.services.impls;
 
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.AddressRequestDto;
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserCreatedRequestDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.AddressResponseDto;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ApiResponse;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PageableResponse;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.PasswordUpdateDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UpdateUserDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.UserCreatedResponseDto;
+import com.phoenix.amazon.AmazonBackend.entity.Address;
 import com.phoenix.amazon.AmazonBackend.entity.Users;
 import com.phoenix.amazon.AmazonBackend.exceptions.BadApiRequestExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserNotFoundExceptions;
 import com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS;
+import com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers;
 import com.phoenix.amazon.AmazonBackend.repository.IUserRepository;
 import com.phoenix.amazon.AmazonBackend.services.AbstractService;
 import com.phoenix.amazon.AmazonBackend.services.IUserService;
@@ -31,16 +37,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.GENDER;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS.PASSWORD;
+import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS.SET_ADDRESS;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS.USER_NAME;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS.FIRST_NAME;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_FIELDS.LAST_NAME;
@@ -61,7 +70,9 @@ import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_V
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_VALIDATION.SEARCH_ALL_USERS_BY_LAST_NAME;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_VALIDATION.SEARCH_ALL_USERS_BY_GENDER;
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.USER_VALIDATION.VALIDATE_PASSWORD;
+import static com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers.AddressResponseDtoToAddress;
 import static com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers.UserDtoToUsers;
+import static com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers.UserToUserCreatedResponseDto;
 import static com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers.UserUpdateDtoToUsers;
 import static com.phoenix.amazon.AmazonBackend.helpers.MappingHelpers.UsersToUsersDto;
 import static com.phoenix.amazon.AmazonBackend.helpers.PagingHelpers.getPageableResponse;
@@ -93,21 +104,21 @@ public class UserServiceImpl extends AbstractService implements IUserService {
         this.userImagePath = properties.getProperty("user.profile.images.path");
     }
 
-    private UserDto initializeUserId(final UserDto userDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException {
+    private UserDto processUser(final UserDto userDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException {
         // validate null object
         validateNullField(userDto, "User object is null",
-                "initializeUserId in UserService");
+                "processUser in UserService");
 
         // trimming leading & lagging whitespaces if any
         final String userIdUUID = UUID.randomUUID().toString();
         final String secondaryEmail = StringUtils.isBlank(userDto.secondaryEmail()) ? userDto.secondaryEmail() : userDto.secondaryEmail().trim();
         final String about = StringUtils.isBlank(userDto.about()) ? userDto.about() : userDto.about().trim();
-        final String password = StringUtils.isBlank(userDto.password()) ? userDto.password() : userDto.password().trim();
-        final String userName = StringUtils.isBlank(userDto.userName()) ? userDto.userName() : userDto.userName().trim();
-        final String primaryEmail = StringUtils.isBlank(userDto.primaryEmail()) ? userDto.primaryEmail() : userDto.primaryEmail().trim();
-        final String gender = StringUtils.isBlank(userDto.gender()) ? userDto.gender() : userDto.gender().trim();
-        final String firstName = StringUtils.isBlank(userDto.firstName()) ? userDto.firstName() : userDto.firstName().trim();
-        final String lastName = StringUtils.isBlank(userDto.lastName()) ? userDto.lastName() : userDto.lastName().trim();
+        final String password = userDto.password().trim();
+        final String userName = userDto.userName().trim();
+        final String primaryEmail = userDto.primaryEmail().trim();
+        final String gender = userDto.gender().trim();
+        final String firstName = userDto.firstName().trim();
+        final String lastName = userDto.lastName().trim();
 
         return new UserDto.builder()
                 .userId(userIdUUID)
@@ -120,6 +131,37 @@ public class UserServiceImpl extends AbstractService implements IUserService {
                 .password(password)
                 .about(about)
                 .lastSeen(LocalDateTime.now())
+                .build();
+    }
+
+    private AddressResponseDto processAddress(final AddressRequestDto addressRequestDto) throws BadApiRequestExceptions {
+        // validate null object
+        validateNullField(addressRequestDto, "address object is null",
+                "processAddress in UserService");
+
+        final String addressId = UUID.randomUUID().toString();
+        final String addressLineOne = addressRequestDto.addressLineNumberOne().trim();
+        final String addressLineTwo = addressRequestDto.addressLineNumberTwo().trim();
+        final String pinCode = addressRequestDto.pinCode().trim();
+        final String mobileNumber = addressRequestDto.mobileNumber().trim();
+        final String townOrCity = addressRequestDto.townOrCity().trim();
+
+        // TODO call third party service to get lat,longitude,state,district,country
+
+
+        return new AddressResponseDto.builder()
+                .addressId(addressId)
+                .addressLineNumberOne(addressLineOne)
+                .addressLineNumberTwo(addressLineTwo)
+                .addressType(addressRequestDto.addressType())
+                .pinCode(pinCode)
+                .mobileNumber(mobileNumber)
+                .townOrCity(townOrCity)
+                .latitude("DUMMY")
+                .longitude("DUMMY")
+                .state("DUMMY")
+                .district("DUMMY")
+                .country("DUMMY")
                 .build();
     }
 
@@ -145,7 +187,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
     /**
      * This returns a pagebale object with pageNumber,pageSize,Sort
-     * ***/
+     ***/
     private Pageable getPageableObject(final int pageNumber, final int pageSize, final Sort sort) {
         return PageRequest.of(pageNumber - 1, pageSize, sort);
     }
@@ -156,20 +198,29 @@ public class UserServiceImpl extends AbstractService implements IUserService {
      * @throws UserNotFoundExceptions,UserExceptions,BadApiRequestExceptions,IOException -list of exceptions being thrown
      **/
     @Override
-    public UserDto createUserService(final UserDto userDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException {
+    public UserCreatedResponseDto createUserService(final UserCreatedRequestDto userCreatedRequestDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException {
         final String methodName = "createUser(UserDto) in UserServiceImpl";
         // initialize user object with UUID as primary key & also to trim leading or lagging whitespaces if any
-        UserDto userDtoWithId = initializeUserId(userDto);
+        UserDto userDtoWithId = processUser(userCreatedRequestDto.userDto());
         Users user = UserDtoToUsers(userDtoWithId);
+
+        AddressRequestDto addressRequestDto = userCreatedRequestDto.addressRequestDto();
+        AddressResponseDto addressResponseDto = processAddress(addressRequestDto);
+        Address address = AddressResponseDtoToAddress(addressResponseDto, user);
 
         // validate path for create user
         userValidationService.validateUser(Optional.of(user), Optional.empty(), methodName, CREATE_USER);
 
         // adding the password to set of password
         user = constructUser(user, user, PASSWORD);
+
+        // add the address
+        Users newUser = new Users.builder().address_set(Set.of(address)).build();
+        user = constructUser(user, newUser, SET_ADDRESS);
+
         // save user
         Users savedUser = userRepository.save(user);
-        return UsersToUsersDto(savedUser);
+        return UserToUserCreatedResponseDto(savedUser);
     }
 
     /**

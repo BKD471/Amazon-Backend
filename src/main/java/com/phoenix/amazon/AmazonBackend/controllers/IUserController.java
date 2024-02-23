@@ -1,5 +1,6 @@
 package com.phoenix.amazon.AmazonBackend.controllers;
 
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserCreatedRequestDto;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ApiResponse;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ImageResponseMessages;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PageableResponse;
@@ -7,6 +8,7 @@ import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PasswordResponseMessage
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.PasswordUpdateDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UpdateUserDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.UserCreatedResponseDto;
 import com.phoenix.amazon.AmazonBackend.exceptions.BadApiRequestExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserNotFoundExceptions;
@@ -38,7 +40,7 @@ public interface IUserController {
      * @throws UserNotFoundExceptions,UserExceptions,BadApiRequestExceptions,IOException -list of exceptions being thrown
      */
     @PostMapping("/v1/create")
-    ResponseEntity<UserDto> createUser(@Valid @RequestBody final UserDto user) throws UserNotFoundExceptions, UserExceptions, BadApiRequestExceptions, IOException;
+    ResponseEntity<UserCreatedResponseDto> createUser(@Valid @RequestBody final UserCreatedRequestDto createUserRequestDto) throws UserNotFoundExceptions, UserExceptions, BadApiRequestExceptions, IOException;
 
     /**
      * @param user     - User Object

@@ -1,10 +1,12 @@
 package com.phoenix.amazon.AmazonBackend.services;
 
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserCreatedRequestDto;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.ApiResponse;
 import com.phoenix.amazon.AmazonBackend.dto.responseDtos.PageableResponse;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.PasswordUpdateDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UpdateUserDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.UserCreatedResponseDto;
 import com.phoenix.amazon.AmazonBackend.exceptions.BadApiRequestExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserExceptions;
 import com.phoenix.amazon.AmazonBackend.exceptions.UserNotFoundExceptions;
@@ -18,7 +20,7 @@ public interface IUserService {
      * @return UserDto - userDto Object
      * @throws UserNotFoundExceptions,UserExceptions,BadApiRequestExceptions,IOException -list of exceptions being thrown
      **/
-    UserDto createUserService(final UserDto userDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException;
+    UserCreatedResponseDto createUserService(final UserCreatedRequestDto createUserRequestDto) throws UserExceptions, UserNotFoundExceptions, BadApiRequestExceptions, IOException;
 
     /**
      * @param user         - user object

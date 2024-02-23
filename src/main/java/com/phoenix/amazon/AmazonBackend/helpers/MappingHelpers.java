@@ -1,14 +1,19 @@
 package com.phoenix.amazon.AmazonBackend.helpers;
 
-import com.phoenix.amazon.AmazonBackend.dto.requestDtos.AddressDto;
+import com.phoenix.amazon.AmazonBackend.dto.requestDtos.AddressRequestDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.CategoryDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.ProductDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UpdateUserDto;
 import com.phoenix.amazon.AmazonBackend.dto.requestDtos.UserDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.AddressResponseDto;
+import com.phoenix.amazon.AmazonBackend.dto.responseDtos.UserCreatedResponseDto;
 import com.phoenix.amazon.AmazonBackend.entity.Address;
 import com.phoenix.amazon.AmazonBackend.entity.Category;
 import com.phoenix.amazon.AmazonBackend.entity.Product;
 import com.phoenix.amazon.AmazonBackend.entity.Users;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.phoenix.amazon.AmazonBackend.helpers.GenderMapHelpers.getGender;
 
@@ -110,31 +115,75 @@ public class MappingHelpers{
                 .build();
     }
 
-    public static Address AddressDtoToAddress(final AddressDto addressDto){
+    public static Address AddressRequestDtoToAddress(final AddressRequestDto addressRequestDto){
         return new Address.builder()
-                .addressId(addressDto.addressId())
-                .mobileNumber(addressDto.mobileNumber())
-                .addressLineNumberOne(addressDto.addressLineNumberOne())
-                .addressLineNumberTwo(addressDto.addressLineNumberTwo())
-                .pinCode(addressDto.pinCode())
-                .townOrCity(addressDto.townOrCity())
-                .district(addressDto.district())
-                .state(addressDto.state())
-                .country(addressDto.country())
+                .addressId(addressRequestDto.addressId())
+                .mobileNumber(addressRequestDto.mobileNumber())
+                .addressLineNumberOne(addressRequestDto.addressLineNumberOne())
+                .addressLineNumberTwo(addressRequestDto.addressLineNumberTwo())
+                .addressType(addressRequestDto.addressType())
+                .pinCode(addressRequestDto.pinCode())
+                .townOrCity(addressRequestDto.townOrCity())
                 .build();
     }
 
-    public static AddressDto AddressToAddressDto(final Address address){
-        return new AddressDto.builder()
+    public static AddressResponseDto AddressToAddressRequestDto(final Address address){
+        return new AddressResponseDto.builder()
                 .addressId(address.getAddressId())
                 .mobileNumber(address.getMobileNumber())
                 .addressLineNumberOne(address.getAddressLineNumberOne())
                 .addressLineNumberTwo(address.getAddressLineNumberTwo())
                 .pinCode(address.getPinCode())
+                .addressType(address.getAddressType())
                 .townOrCity(address.getTownOrCity())
                 .district(address.getDistrict())
                 .state(address.getState())
                 .country(address.getCountry())
+                .build();
+    }
+
+    public static AddressResponseDto AddressToAddressResponseDto(final Address address){
+        return new AddressResponseDto.builder()
+                .addressId(address.getAddressId())
+                .mobileNumber(address.getMobileNumber())
+                .addressLineNumberOne(address.getAddressLineNumberOne())
+                .addressLineNumberTwo(address.getAddressLineNumberTwo())
+                .pinCode(address.getPinCode())
+                .addressType(address.getAddressType())
+                .townOrCity(address.getTownOrCity())
+                .district(address.getDistrict())
+                .state(address.getState())
+                .country(address.getCountry())
+                .build();
+    }
+
+    public static  Address AddressResponseDtoToAddress(final AddressResponseDto addressResponseDto,final Users users){
+        return new Address.builder()
+                .addressId(addressResponseDto.addressId())
+                .mobileNumber(addressResponseDto.mobileNumber())
+                .addressLineNumberOne(addressResponseDto.addressLineNumberOne())
+                .addressLineNumberTwo(addressResponseDto.addressLineNumberTwo())
+                .pinCode(addressResponseDto.pinCode())
+                .addressType(addressResponseDto.addressType())
+                .townOrCity(addressResponseDto.townOrCity())
+                .latitude(addressResponseDto.latitude())
+                .longitude(addressResponseDto.longitude())
+                .district(addressResponseDto.district())
+                .state(addressResponseDto.state())
+                .country(addressResponseDto.country())
+                .users(users)
+                .build();
+    }
+
+    public static UserCreatedResponseDto  UserToUserCreatedResponseDto(final Users users){
+        final Set<Address> address=users.getAddress_set();
+        final Set<AddressResponseDto> addressResponseDtoSet=address.stream().
+                map(MappingHelpers::AddressToAddressResponseDto)
+                .collect(Collectors.toSet());
+
+        return new UserCreatedResponseDto.builder()
+                .userDto(UsersToUsersDto(users))
+                .addressResponseDto(addressResponseDtoSet)
                 .build();
     }
 }

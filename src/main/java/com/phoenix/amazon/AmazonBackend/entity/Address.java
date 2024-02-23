@@ -2,9 +2,17 @@ package com.phoenix.amazon.AmazonBackend.entity;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+
 
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.AddressType;
 
@@ -19,8 +27,8 @@ public class Address {
     private String addressLineNumberOne;
     @Column(name = "house_address_line_2", nullable = false)
     private String addressLineNumberTwo;
-
-    @Column(name = "address_type",nullable = false)
+    @Column(name = "address_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private AddressType addressType;
     @Column(name = "pin_code", nullable = false)
     private String pinCode;
@@ -34,11 +42,11 @@ public class Address {
     private String district;
     @Column(name = "state", nullable = false)
     private String state;
-
-
     @Column(name = "user_country", nullable = false)
     private String country;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users users;
 
     public Address() {
     }
@@ -48,13 +56,14 @@ public class Address {
         this.mobileNumber = builder.mobileNumber;
         this.addressLineNumberOne = builder.addressLineNumberOne;
         this.addressLineNumberTwo = builder.addressLineNumberTwo;
-        this.addressType=builder.addressType;
+        this.addressType = builder.addressType;
         this.pinCode = builder.pinCode;
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
         this.townOrCity = builder.townOrCity;
         this.district = builder.district;
         this.state = builder.state;
+        this.users=builder.users;
         this.country = builder.country;
     }
 
@@ -71,6 +80,7 @@ public class Address {
         private String district;
         private String state;
         private String country;
+        private Users users;
 
         public builder() {
         }
@@ -95,8 +105,8 @@ public class Address {
             return this;
         }
 
-        public builder addressType(final AddressType addressType){
-            this.addressType=addressType;
+        public builder addressType(final AddressType addressType) {
+            this.addressType = addressType;
             return this;
         }
 
@@ -135,6 +145,11 @@ public class Address {
             return this;
         }
 
+        public builder users(final Users users) {
+            this.users = users;
+            return this;
+        }
+
         public Address build() {
             return new Address(this);
         }
@@ -143,44 +158,35 @@ public class Address {
     public String getAddressId() {
         return addressId;
     }
-
     public String getMobileNumber() {
         return mobileNumber;
     }
-
     public String getAddressLineNumberOne() {
         return addressLineNumberOne;
     }
-
-    public String getAddressLineNumberTwo() {
-        return addressLineNumberTwo;
-    }
-
+    public String getAddressLineNumberTwo() {return addressLineNumberTwo;}
+    public AddressType getAddressType() {return addressType;}
+    public Users getUsers() {return users;}
     public String getPinCode() {
         return pinCode;
     }
-
     public String getLatitude() {
         return latitude;
     }
-
     public String getLongitude() {
         return longitude;
     }
-
     public String getTownOrCity() {
         return townOrCity;
     }
-
     public String getDistrict() {
         return district;
     }
-
     public String getState() {
         return state;
     }
-
     public String getCountry() {
         return country;
     }
+
 }

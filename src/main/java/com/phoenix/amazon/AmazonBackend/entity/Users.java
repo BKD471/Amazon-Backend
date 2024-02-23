@@ -12,7 +12,7 @@ import jakarta.persistence.CascadeType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.phoenix.amazon.AmazonBackend.helpers.AllConstantHelpers.GENDER;
@@ -34,23 +34,20 @@ public class Users extends Audit {
     private String secondaryEmail;
     @Column(name = "user_password", length = 255, nullable = false)
     private String password;
-
     @Enumerated(value = EnumType.STRING)
     private GENDER gender;
-
     @Column(name = "user_image_name")
     private String profileImage;
-
     @Column(name = "last_seen")
     private LocalDateTime lastSeen;
-
     @Column(length = 1000)
     private String about;
-
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    private Set<PassWordSet> previous_password_set = new LinkedHashSet<>();
+    private Set<PassWordSet> previous_password_set = new HashSet<>();
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private Set<Address> address_set = new HashSet<>();
 
-    protected Users() {
+    public Users() {
     }
 
     public Users(builder builder) {
@@ -64,6 +61,7 @@ public class Users extends Audit {
         this.profileImage = builder.profileImage;
         this.password = builder.password;
         this.previous_password_set = builder.previous_password_set;
+        this.address_set=builder.addressSet;
         this.lastSeen = builder.lastSeen;
         this.about = builder.about;
         this.createdDate = builder.createdDate;
@@ -83,6 +81,7 @@ public class Users extends Audit {
         private LocalDateTime lastSeen;
         private String about;
         private Set<PassWordSet> previous_password_set;
+        private Set<Address> addressSet;
         private LocalDate createdDate;
         private String createdBy;
 
@@ -126,6 +125,11 @@ public class Users extends Audit {
 
         public builder previous_password_set(final Set<PassWordSet> previous_password_set) {
             this.previous_password_set = previous_password_set;
+            return this;
+        }
+
+        public builder address_set(final Set<Address> addressSet) {
+            this.addressSet = addressSet;
             return this;
         }
 
@@ -211,4 +215,6 @@ public class Users extends Audit {
     public String getAbout() {
         return about;
     }
+
+    public Set<Address> getAddress_set() {return address_set;}
 }
