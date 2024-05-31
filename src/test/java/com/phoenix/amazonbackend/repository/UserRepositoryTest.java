@@ -9,12 +9,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.phoenix.amazonbackend.utils.AllConstants.GENDER.MALE;
@@ -35,7 +31,7 @@ public class UserRepositoryTest {
         final Users userData = constructUserRepositoryData();
 
         // When
-        final Users savedUserData=userRepository.save(userData);
+        final Users savedUserData = userRepository.save(userData);
 
         // Then
         assertThat(userRepository.findAll()).containsOnly(savedUserData);
@@ -44,7 +40,7 @@ public class UserRepositoryTest {
     @Test
     @Order(2)
     void delete() {
-         // When
+        // When
         userRepository.deleteAll();
 
         // Then
@@ -69,7 +65,7 @@ public class UserRepositoryTest {
                 "nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit,\n";
         final String ADMIN = "ADMIN";
 
-        return  Users.builder()
+        return Users.builder()
                 .userId(UUID.fromString(TEST_UUID))
                 .userName(TEST_USER_NAME)
                 .firstName(TEST_FIRST_NAME)
