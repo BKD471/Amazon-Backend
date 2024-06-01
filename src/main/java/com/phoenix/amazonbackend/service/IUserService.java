@@ -7,7 +7,7 @@ import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
 import com.phoenix.amazonbackend.utils.AllConstants.USER_FIELDS;
 
-public interface IUSerService {
+public interface IUserService {
     /**
      * Creates New User account in Database
      *

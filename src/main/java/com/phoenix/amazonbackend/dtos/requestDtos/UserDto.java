@@ -9,7 +9,7 @@ import java.util.UUID;
 import static com.phoenix.amazonbackend.utils.GenderMapingHelpers.getGender;
 
 @Builder
-public record UserDto(UUID userId,
+public record UserDto(String userId,
                       String userName,
                       String firstName,
                       String lastName,
@@ -26,7 +26,7 @@ public record UserDto(UUID userId,
 
     public static UserDto mapToUsersDto(final Users users) {
         return UserDto.builder()
-                .userId(users.getUserId())
+                .userId(String.valueOf(users.getUserId()))
                 .userName(users.getUserName())
                 .firstName(users.getFirstName())
                 .lastName(users.getLastName())
@@ -44,7 +44,7 @@ public record UserDto(UUID userId,
 
     public static Users mapToUsers(final UserDto userDto) {
         return Users.builder()
-                .userId(userDto.userId())
+                .userId(UUID.fromString(userDto.userId()))
                 .userName(userDto.userName())
                 .firstName(userDto.firstName())
                 .lastName(userDto.lastName())
