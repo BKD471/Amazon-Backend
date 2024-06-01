@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.phoenix.amazonbackend.dtos.requestDtos.UserDto.mapToUsersDto;
+import static com.phoenix.amazonbackend.utils.AllConstants.DestinationDtoType;
 
 
 public class PagingUtils {
-    public static <U, V> PageableResponse<U> getPageableResponse(final Page<V> page, final AllConstants.DestinationDtoType destinationDtoType) {
+    public static <U, V> PageableResponse<U> getPageableResponse(final Page<V> page, final DestinationDtoType destinationDtoType) {
         List<V> entityList = page.getContent();
         List<U> dtoList = new ArrayList<>();
 

@@ -3,13 +3,15 @@ package com.phoenix.amazonbackend.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.phoenix.amazonbackend.utils.AllConstants.GENDER;
+
 import static com.phoenix.amazonbackend.utils.AllConstants.GENDER.FEMALE;
 import static com.phoenix.amazonbackend.utils.AllConstants.GENDER.LGBTQ;
 import static com.phoenix.amazonbackend.utils.AllConstants.GENDER.MALE;
 import static com.phoenix.amazonbackend.utils.AllConstants.GENDER.NON_BINARY;
 
 public class GenderMapingHelpers {
-    public static final Map<String, AllConstants.GENDER> genderMap=new HashMap<>();
+    public static final Map<String, GENDER> genderMap = new HashMap<>();
 
     static {
         genderMap.put("MALE", MALE);
@@ -18,9 +20,9 @@ public class GenderMapingHelpers {
         genderMap.put("LGBTQ", LGBTQ);
 
     }
-    public static AllConstants.GENDER getGender(final String gender){
-        if(genderMap.containsKey(gender)) return genderMap.get(gender);
+
+    public static GENDER getGender(final String gender) {
+        if (genderMap.containsKey(gender)) return genderMap.get(gender);
         return null;
     }
-
 }
