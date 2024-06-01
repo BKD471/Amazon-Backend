@@ -34,7 +34,7 @@ public record UpdateUserDetailsDto(String userId,
                 .build();
     }
 
-    public static UpdateUserDetailsDto mapToUserDetailsDto(final Users users) {
+    public static UpdateUserDetailsDto mapToUpdateUserDetailsDto(final Users users) {
         return UpdateUserDetailsDto.builder()
                 .userId(String.valueOf(users.getUserId()))
                 .userName(users.getUserName())
