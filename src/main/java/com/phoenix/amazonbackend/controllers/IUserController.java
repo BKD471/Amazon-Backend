@@ -132,7 +132,11 @@ public interface IUserController {
     @GetMapping("/v1/genPassword")
     ResponseEntity<PasswordResponseMessages> generatePassword();
 
-    /**
+
+    /*
+     * currently resetting password when password is lost is not developed
+     * you have to know your old password to reset it
+     * OTP/email based password resetting will be done later
      * Handles password reset request from Client
      *
      * @param passwordUpdateDto - object to update old password

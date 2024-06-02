@@ -65,7 +65,7 @@ public interface IUserService {
      * @param primaryEmail - primary Email of user
      * @return UserDto     - userDto Object
      **/
-    UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final String userId,
+    UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final UUID userId,
                                                                       final String userName,
                                                                       final String primaryEmail);
 

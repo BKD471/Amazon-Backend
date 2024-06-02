@@ -5,18 +5,19 @@ import com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto;
 import com.phoenix.amazonbackend.dtos.requestDtos.UserDto;
 import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
+import com.phoenix.amazonbackend.entities.PassWordSet;
 import com.phoenix.amazonbackend.entities.Users;
 import com.phoenix.amazonbackend.repository.IUserRepository;
 import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
 import io.micrometer.common.util.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -24,6 +25,8 @@ import static com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto.userDeta
 import static com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto.usersToUserDetailsDto;
 import static com.phoenix.amazonbackend.dtos.requestDtos.UserDto.userDtoToUsers;
 import static com.phoenix.amazonbackend.dtos.requestDtos.UserDto.usersToUsersDto;
+import static com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.DestinationDtoType.USER_DTO;
+import static com.phoenix.amazonbackend.utils.PagingUtils.getPageableResponse;
 
 @Service("UserServicePrimary")
 public class UserServiceImpl extends AbstractService implements IUserService {
@@ -37,7 +40,7 @@ public class UserServiceImpl extends AbstractService implements IUserService {
     @Override
     public UserDto createUserService(final UserDto userDto) {
         // initialize user object with UUID as primary key & add password to passwordSet
-        Users user = userDtoToUsers(userDto.initializeUser(userDto));
+        final Users user = userDtoToUsers(userDto.initializeUser(userDto));
 
         // save user
         final Users savedUser = userRepository.save(user);
@@ -79,14 +82,20 @@ public class UserServiceImpl extends AbstractService implements IUserService {
                                                  final int pageSize,
                                                  final String sortBy,
                                                  final String sortDir) {
-        return null;
+        final Sort sort = sortDir.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        // get the pageable object
+        final Pageable pageableObject = getPageableObject(pageNumber, pageSize, sort);
+        // get all user pages
+        final Page<Users> userPage = userRepository.findAll(pageableObject);
+        return getPageableResponse(userPage, USER_DTO);
     }
 
     @Override
-    public UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final String userId,
+    public UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final UUID userId,
                                                                              final String userName,
                                                                              final String primaryEmail) {
-        return null;
+        // load user from db & return as UserDto
+        return usersToUsersDto(loadUserByUserIdOrUserNameOrPrimaryEmail(userId, userName, primaryEmail));
     }
 
     @Override
@@ -96,7 +105,37 @@ public class UserServiceImpl extends AbstractService implements IUserService {
                                                                final int pageSize,
                                                                final USER_FIELDS sortBy,
                                                                final String sortDir) {
-        return null;
+        // get the user db column names
+        final StringBuilder sortByColumn = getUserDbField(sortBy);
+        // sort in either ascending or descending
+        final Sort sort = sortDir.equals("desc") ? Sort.by(sortByColumn.toString()).descending()
+                : Sort.by(sortByColumn.toString()).ascending();
+        // get the pageable object
+        final Pageable pageableObject = getPageableObject(pageNumber, pageSize, sort);
+        Page<Users> usersPage = Page.empty();
+        switch (field) {
+            // get user by primary email
+            case PRIMARY_EMAIL -> {
+                usersPage = userRepository.searchUserByEmail(value, pageableObject).get();
+            }
+            // get user by user name
+            case USER_NAME -> {
+                usersPage = userRepository.searchUserByUserName(value, pageableObject).get();
+            }
+            // get all users by gender
+            case GENDER -> {
+                usersPage = userRepository.searchUserByGender(value, pageableObject).get();
+            }
+            // get all users by first name
+            case FIRST_NAME -> {
+                usersPage = userRepository.searchUserByFirstName(value, pageableObject).get();
+            }
+            // get all users by last name
+            case LAST_NAME -> {
+                usersPage = userRepository.searchUserByLastName(value, pageableObject).get();
+            }
+        }
+        return getPageableResponse(usersPage, USER_DTO);
     }
 
     @Override
@@ -105,7 +144,14 @@ public class UserServiceImpl extends AbstractService implements IUserService {
                                                               final int pageSize,
                                                               final String sortBy,
                                                               final String sortDir) {
-        return null;
+        // sort in either ascending or descending
+        final Sort sort = sortDir.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        // get pageable object
+        final Pageable pageableObject = getPageableObject(pageNumber, pageSize, sort);
+        // get page of all user by matching userName
+        final Page<Users> allUsersWithNearlyUserNamePage = userRepository
+                .findAllByUserNameContaining(userNameWord, pageableObject).get();
+        return getPageableResponse(allUsersWithNearlyUserNamePage, USER_DTO);
     }
 
     @Override
@@ -148,11 +194,27 @@ public class UserServiceImpl extends AbstractService implements IUserService {
 
     @Override
     public void resetPasswordService(final PasswordUpdateDto passwordUpdateDto) {
+        final String primaryEmail = passwordUpdateDto.primaryEmail();
+        // load user from db
+        final Users fetchedUser = loadUserByUserIdOrUserNameOrPrimaryEmail(null, primaryEmail, primaryEmail);
+
+        // update password & save
+        final String newPassword = passwordUpdateDto.newPassword();
+        final Set<PassWordSet> passWordSetSet = fetchedUser.getPrevious_password_set();
+        PassWordSet newPassWordSet = PassWordSet
+                .builder()
+                .password_id(UUID.randomUUID())
+                .passwords(newPassword)
+                .users(fetchedUser).build();
+        passWordSetSet.add(newPassWordSet);
+        fetchedUser.setPrevious_password_set(passWordSetSet);
+        fetchedUser.setPassword(newPassword);
+        userRepository.save(fetchedUser);
     }
 
-    /***
-     *  Preparing response messages for delete
-     * ***/
+    /*
+     * Preparing response messages for delete
+     */
     private String deleteResponseMessage(final String userId,
                                          final String userName,
                                          final String primaryEmail) {
@@ -169,5 +231,34 @@ public class UserServiceImpl extends AbstractService implements IUserService {
             value = primaryEmail;
         }
         return String.format("User with %s : %s is deleted successfully", field, value);
+    }
+
+    /**
+     * This returns a pageable object with pageNumber,pageSize,Sort
+     */
+    private Pageable getPageableObject(final int pageNumber,
+                                       final int pageSize,
+                                       final Sort sort) {
+        return PageRequest.of(pageNumber - 1, pageSize, sort);
+    }
+
+    /**
+     * This returns a db column
+     */
+    private StringBuilder getUserDbField(final USER_FIELDS sortBy) {
+        final StringBuilder sortByColumn = new StringBuilder();
+        switch (sortBy) {
+            case USER_NAME -> sortByColumn.append("user_name");
+            case FIRST_NAME -> sortByColumn.append("first_name");
+            case LAST_NAME -> sortByColumn.append("last_name");
+            case PRIMARY_EMAIL -> sortByColumn.append("user_primary_email");
+            case SECONDARY_EMAIL -> sortByColumn.append("user_secondary_email");
+            case PASSWORD -> sortByColumn.append("user_password");
+            case GENDER -> sortByColumn.append("gender");
+            case PROFILE_IMAGE -> sortByColumn.append("user_image_name");
+            case LAST_SEEN -> sortByColumn.append("last_seen");
+            case ABOUT -> sortByColumn.append("about");
+        }
+        return sortByColumn;
     }
 }
