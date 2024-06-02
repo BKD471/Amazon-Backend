@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.phoenix.amazonbackend.utils.AllConstants.GENDER;
+import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.GENDER;
 
 
 @NoArgsConstructor

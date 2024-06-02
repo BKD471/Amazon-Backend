@@ -1,13 +1,10 @@
 package com.phoenix.amazonbackend.dtos.requestDtos;
 
 import com.phoenix.amazonbackend.entities.Users;
-import com.phoenix.amazonbackend.utils.AllConstants;
 import io.micrometer.common.util.StringUtils;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;

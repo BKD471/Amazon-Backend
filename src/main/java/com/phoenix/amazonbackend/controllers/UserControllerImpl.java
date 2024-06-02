@@ -2,7 +2,7 @@ package com.phoenix.amazonbackend.controllers;
 
 
 import com.phoenix.amazonbackend.dtos.requestDtos.PasswordUpdateDto;
-import com.phoenix.amazonbackend.dtos.requestDtos.UpdateUserDetailsDto;
+import com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto;
 import com.phoenix.amazonbackend.dtos.requestDtos.UserDto;
 import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phoenix.amazonbackend.utils.AllConstants.USER_FIELDS;
+import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
 
 
 @RestController("UserControllerPrimary")
@@ -24,7 +24,7 @@ public class UserControllerImpl implements IUserController {
     }
 
     @Override
-    public ResponseEntity<UserDto> updateUserByUserIdOrUserNameOrPrimaryEmail(final UpdateUserDetailsDto user,
+    public ResponseEntity<UserDto> updateUserByUserIdOrUserNameOrPrimaryEmail(final UserDetailsDto user,
                                                                               final String userId,
                                                                               final String userName,
                                                                               final String primaryEmail) {
