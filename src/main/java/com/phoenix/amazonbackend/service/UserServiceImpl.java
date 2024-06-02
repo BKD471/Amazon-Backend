@@ -9,11 +9,9 @@ import com.phoenix.amazonbackend.entities.PassWordSet;
 import com.phoenix.amazonbackend.entities.Users;
 import com.phoenix.amazonbackend.repository.IUserRepository;
 import com.phoenix.amazonbackend.utils.AllConstants;
-import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,14 +27,14 @@ public class UserServiceImpl implements IUserService {
     public UserDto createUserService(final UserDto userDto) {
         final String methodName = "createUser(UserDto) in UserServiceImpl";
         // initialize user object with UUID as primary key & also to trim leading or lagging whitespaces if any
-        final Users user = mapToUsers(userDto);
-        Users userWithId = initializeUserId(user);
+        final UserDto userWithId = userDto.updateUserId();
+        Users user = mapToUsers(userWithId);
 
         // adding the password to set of password
-        userWithId = addPasswordToPreviousPasswordSet(userWithId, userWithId.getPassword());
+        user = addPasswordToPreviousPasswordSet(user, user.getPassword());
 
         // save user
-        final Users savedUser = userRepository.save(userWithId);
+        final Users savedUser = userRepository.save(user);
         return mapToUsersDto(savedUser);
     }
 
@@ -78,34 +76,6 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void resetPasswordService(PasswordUpdateDto passwordUpdateDto) {
 
-    }
-
-    private Users initializeUserId(final Users user) {
-        // trimming leading & lagging whitespaces if any
-        final UUID userIdUUID = UUID.randomUUID();
-        final String secondaryEmail = StringUtils.isBlank(user.getSecondaryEmail()) ? user.getSecondaryEmail() : user.getSecondaryEmail().trim();
-        final String about = StringUtils.isBlank(user.getAbout()) ? user.getAbout() : user.getAbout().trim();
-        final String password = StringUtils.isBlank(user.getPassword()) ? user.getPassword() : user.getPassword().trim();
-        final String userName = StringUtils.isBlank(user.getUserName()) ? user.getUserName() : user.getUserName().trim();
-        final String primaryEmail = StringUtils.isBlank(user.getPrimaryEmail()) ? user.getPrimaryEmail() : user.getPrimaryEmail().trim();
-        final AllConstants.GENDER gender = user.getGender();
-        final String firstName = StringUtils.isBlank(user.getFirstName()) ? user.getFirstName() : user.getFirstName().trim();
-        final String lastName = StringUtils.isBlank(user.getLastName()) ? user.getLastName() : user.getLastName().trim();
-
-        return Users.builder()
-                .userId(userIdUUID)
-                .userName(userName)
-                .firstName(firstName)
-                .lastName(lastName)
-                .primaryEmail(primaryEmail)
-                .secondaryEmail(secondaryEmail)
-                .gender(gender)
-                .password(password)
-                .about(about)
-                .lastSeen(LocalDateTime.now())
-                .modifiedBy(null)
-                .modifiedDate(null)
-                .build();
     }
 
     private Users addPasswordToPreviousPasswordSet(final Users users, final String password) {

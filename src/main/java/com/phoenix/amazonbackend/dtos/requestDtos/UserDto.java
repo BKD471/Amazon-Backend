@@ -4,6 +4,7 @@ import com.phoenix.amazonbackend.entities.Users;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.phoenix.amazonbackend.utils.GenderMapingHelpers.getGender;
@@ -23,6 +24,28 @@ public record UserDto(String userId,
                       LocalDateTime createdDate,
                       LocalDateTime modifiedDate,
                       String modifiedBy) {
+
+    public UserDto updateUserId() {
+        final String userIdUUID = UUID.randomUUID().toString();
+        final String secondaryEmail = !Objects.isNull(secondaryEmail()) ? secondaryEmail().trim() : null;
+        final String about = !Objects.isNull(about()) ? about().trim() : null;
+        return new UserDto(
+                userIdUUID,
+                this.userName,
+                this.firstName,
+                this.lastName,
+                this.primaryEmail,
+                secondaryEmail,
+                this.password,
+                this.gender,
+                this.profileImage,
+                about,
+                this.lastSeen,
+                this.createdDate,
+                this.modifiedDate,
+                this.modifiedBy
+        );
+    }
 
     public static UserDto mapToUsersDto(final Users users) {
         return UserDto.builder()
