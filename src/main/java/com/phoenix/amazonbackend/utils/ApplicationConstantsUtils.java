@@ -1,6 +1,9 @@
 package com.phoenix.amazonbackend.utils;
 
-public class AllConstants {
+public class ApplicationConstantsUtils {
+    private ApplicationConstantsUtils(){
+        // Util Class, must not be instantiated
+    }
     public enum GENDER {
         MALE, FEMALE, NON_BINARY, LGBTQ
     }

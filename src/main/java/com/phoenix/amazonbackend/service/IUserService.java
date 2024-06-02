@@ -1,11 +1,13 @@
 package com.phoenix.amazonbackend.service;
 
 import com.phoenix.amazonbackend.dtos.requestDtos.PasswordUpdateDto;
-import com.phoenix.amazonbackend.dtos.requestDtos.UpdateUserDetailsDto;
+import com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto;
 import com.phoenix.amazonbackend.dtos.requestDtos.UserDto;
 import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
-import com.phoenix.amazonbackend.utils.AllConstants.USER_FIELDS;
+import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
+
+import java.util.UUID;
 
 public interface IUserService {
     /**
@@ -19,14 +21,16 @@ public interface IUserService {
     /**
      * Updates User Information either by UserId or UserName or PrimaryEmail
      *
-     * @param user         - user object
+     * @param userDetails  - user object
      * @param userId       - id of user
      * @param userName     - username of user
      * @param primaryEmail - primary Email of user
      * @return UserDto - userDto Object
      **/
-    UserDto updateUserServiceByUserIdOrUserNameOrPrimaryEmail(final UpdateUserDetailsDto user, final String userId,
-                                                              final String userName, final String primaryEmail);
+    UserDto updateUserServiceByUserIdOrUserNameOrPrimaryEmail(final UserDetailsDto userDetails,
+                                                              final UUID userId,
+                                                              final String userName,
+                                                              final String primaryEmail);
 
     /**
      * Deletes uses either by userId or UserName or PrimaryEmail
@@ -35,7 +39,8 @@ public interface IUserService {
      * @param userName     - username of user
      * @param primaryEmail - primary Email of user
      **/
-    ApiResponse deleteUserServiceByUserIdOrUserNameOrPrimaryEmail(final String userId, final String userName,
+    ApiResponse deleteUserServiceByUserIdOrUserNameOrPrimaryEmail(final UUID userId,
+                                                                  final String userName,
                                                                   final String primaryEmail);
 
     /**
@@ -47,8 +52,10 @@ public interface IUserService {
      * @param sortDir    - direction of sorting
      * @return PageableResponse<userDto> - page of userDto
      **/
-    PageableResponse<UserDto> getAllUsers(final int pageNumber, final int pageSize,
-                                          final String sortBy, final String sortDir);
+    PageableResponse<UserDto> getAllUsers(final int pageNumber,
+                                          final int pageSize,
+                                          final String sortBy,
+                                          final String sortDir);
 
     /**
      * Get user Information either by UserId or UserName or PrimaryEmail
@@ -58,7 +65,8 @@ public interface IUserService {
      * @param primaryEmail - primary Email of user
      * @return UserDto     - userDto Object
      **/
-    UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final String userId, final String userName,
+    UserDto getUserServiceInformationByUserIdOrUserNameOrPrimaryEmail(final String userId,
+                                                                      final String userName,
                                                                       final String primaryEmail);
 
     /**
@@ -74,9 +82,12 @@ public interface IUserService {
      * @param sortDir    - direction of sorting
      * @return PageableResponse<UserDto> - page of userDto
      **/
-    PageableResponse<UserDto> searchUserByFieldAndValue(final USER_FIELDS field, final String value,
-                                                        final int pageNumber, final int pageSize,
-                                                        final USER_FIELDS sortBy, final String sortDir);
+    PageableResponse<UserDto> searchUserByFieldAndValue(final USER_FIELDS field,
+                                                        final String value,
+                                                        final int pageNumber,
+                                                        final int pageSize,
+                                                        final USER_FIELDS sortBy,
+                                                        final String sortDir);
 
     /**
      * Searches all possible Users whose UserName matches by userNameWord
@@ -88,8 +99,10 @@ public interface IUserService {
      * @param sortDir      - direction of sorting
      * @return PageableResponse<UserDto> - page of userDto
      */
-    PageableResponse<UserDto> searchAllUsersByUserName(final String userNameWord, final int pageNumber,
-                                                       final int pageSize, final String sortBy,
+    PageableResponse<UserDto> searchAllUsersByUserName(final String userNameWord,
+                                                       final int pageNumber,
+                                                       final int pageSize,
+                                                       final String sortBy,
                                                        final String sortDir);
 
     /**

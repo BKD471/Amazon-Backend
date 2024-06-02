@@ -1,13 +1,16 @@
 package com.phoenix.amazonbackend.dtos.requestDtos;
 
+import com.phoenix.amazonbackend.entities.PassWordSet;
 import com.phoenix.amazonbackend.entities.Users;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
-import static com.phoenix.amazonbackend.utils.GenderMapingHelpers.getGender;
+import static com.phoenix.amazonbackend.utils.GenderMappingUtils.getGender;
 
 @Builder
 public record UserDto(String userId,
@@ -17,6 +20,7 @@ public record UserDto(String userId,
                       String primaryEmail,
                       String secondaryEmail,
                       String password,
+                      Set<PassWordSet> previous_password_set,
                       String gender,
                       String profileImage,
                       String about,
@@ -25,10 +29,20 @@ public record UserDto(String userId,
                       LocalDateTime modifiedDate,
                       String modifiedBy) {
 
-    public UserDto updateUserId() {
+    public UserDto initializeUser(final UserDto users) {
+        // initialize userId & trim leading or lagging whitespaces if any
         final String userIdUUID = UUID.randomUUID().toString();
         final String secondaryEmail = !Objects.isNull(secondaryEmail()) ? secondaryEmail().trim() : null;
         final String about = !Objects.isNull(about()) ? about().trim() : null;
+
+        // register current password to used password set
+        final Set<PassWordSet> passWordSetSet = new HashSet<>();
+        passWordSetSet.add(PassWordSet.builder()
+                .password_id(UUID.randomUUID())
+                .passwords(password)
+                .users(userDtoToUsers(users))
+                .build());
+
         return new UserDto(
                 userIdUUID,
                 this.userName,
@@ -37,6 +51,7 @@ public record UserDto(String userId,
                 this.primaryEmail,
                 secondaryEmail,
                 this.password,
+                passWordSetSet,
                 this.gender,
                 this.profileImage,
                 about,
@@ -47,7 +62,7 @@ public record UserDto(String userId,
         );
     }
 
-    public static UserDto mapToUsersDto(final Users users) {
+    public static UserDto usersToUsersDto(final Users users) {
         return UserDto.builder()
                 .userId(String.valueOf(users.getUserId()))
                 .userName(users.getUserName())
@@ -65,7 +80,7 @@ public record UserDto(String userId,
                 .build();
     }
 
-    public static Users mapToUsers(final UserDto userDto) {
+    public static Users userDtoToUsers(final UserDto userDto) {
         return Users.builder()
                 .userId(UUID.fromString(userDto.userId()))
                 .userName(userDto.userName())
