@@ -27,41 +27,41 @@ public record UserDetailsDto(String userId,
 ) {
 
     public UserDetailsDto updateUserDetails(final UserDetailsDto oldUserDetails,
-                                               final UserDetailsDto newUserDetailDto) {
+                                            final UserDetailsDto newUserDetailDto) {
 
         // update userName
-        final String userName = testCondition(oldUserDetails.userName(), newUserDetailDto.userName())
+        final String userName = isEligibleToBeUpdated(oldUserDetails.userName(), newUserDetailDto.userName())
                 ? newUserDetailDto.userName
                 : oldUserDetails.userName;
 
 
         // update firstName
-        final String firstName = testCondition(oldUserDetails.firstName(), newUserDetailDto.firstName())
+        final String firstName = isEligibleToBeUpdated(oldUserDetails.firstName(), newUserDetailDto.firstName())
                 ? newUserDetailDto.firstName
                 : oldUserDetails.firstName;
 
         // update firstName
-        final String lastName = testCondition(oldUserDetails.lastName(), newUserDetailDto.lastName())
+        final String lastName = isEligibleToBeUpdated(oldUserDetails.lastName(), newUserDetailDto.lastName())
                 ? newUserDetailDto.lastName
                 : oldUserDetails.lastName;
 
         // update primaryEmail
-        final String primaryEmail = testCondition(oldUserDetails.primaryEmail(), newUserDetailDto.primaryEmail())
+        final String primaryEmail = isEligibleToBeUpdated(oldUserDetails.primaryEmail(), newUserDetailDto.primaryEmail())
                 ? newUserDetailDto.primaryEmail
                 : oldUserDetails.primaryEmail;
 
         // update firstName
-        final String secondaryEmail = testCondition(oldUserDetails.secondaryEmail(), newUserDetailDto.secondaryEmail())
+        final String secondaryEmail = isEligibleToBeUpdated(oldUserDetails.secondaryEmail(), newUserDetailDto.secondaryEmail())
                 ? newUserDetailDto.secondaryEmail
                 : oldUserDetails.secondaryEmail;
 
         // update firstName
-        final String gender = testCondition(oldUserDetails.gender(), newUserDetailDto.gender())
+        final String gender = isEligibleToBeUpdated(oldUserDetails.gender(), newUserDetailDto.gender())
                 ? newUserDetailDto.gender
                 : oldUserDetails.gender;
 
         // update about
-        final String about = testCondition(oldUserDetails.about(), newUserDetailDto.about())
+        final String about = isEligibleToBeUpdated(oldUserDetails.about(), newUserDetailDto.about())
                 ? newUserDetailDto.about
                 : oldUserDetails.about;
 
@@ -80,9 +80,9 @@ public record UserDetailsDto(String userId,
         );
     }
 
-    private boolean testCondition(final String oldField, final String newField) {
-        Predicate<String> isNotBlankField = StringUtils::isNotBlank;
-        BiPredicate<String, String> checkFieldEquality = String::equalsIgnoreCase;
+    private boolean isEligibleToBeUpdated(final String oldField, final String newField) {
+        final Predicate<String> isNotBlankField = StringUtils::isNotBlank;
+        final BiPredicate<String, String> checkFieldEquality = String::equalsIgnoreCase;
 
         return isNotBlankField.test(newField) &&
                 !checkFieldEquality.test(newField, oldField);

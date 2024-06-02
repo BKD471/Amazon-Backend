@@ -16,7 +16,9 @@ public abstract class AbstractService {
     protected Users loadUserByUserIdOrUserNameOrPrimaryEmail(final UUID userId,
                                                              final String userName,
                                                              final String primaryEmail) {
-        Optional<Users> users = userRepository.findByUserIdOrUserNameOrPrimaryEmail(userId, userName, primaryEmail);
-        return users.get();
+        return userRepository
+                .findByUserIdOrUserNameOrPrimaryEmail(userId,
+                        userName,
+                        primaryEmail).get();
     }
 }

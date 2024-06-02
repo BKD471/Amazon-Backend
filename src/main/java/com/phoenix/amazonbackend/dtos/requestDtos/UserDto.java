@@ -32,14 +32,14 @@ public record UserDto(String userId,
     public UserDto initializeUser(final UserDto users) {
         // initialize userId & trim leading or lagging whitespaces if any
         final String userIdUUID = UUID.randomUUID().toString();
-        final String secondaryEmail = !Objects.isNull(secondaryEmail()) ? secondaryEmail().trim() : null;
-        final String about = !Objects.isNull(about()) ? about().trim() : null;
+        final String secondaryEmail = Objects.isNull(secondaryEmail()) ? null : secondaryEmail().trim();
+        final String about = Objects.isNull(about()) ? null : about().trim();
 
-        // register current password to used password set
+        // register current password to existing password set
         final Set<PassWordSet> passWordSetSet = new HashSet<>();
         passWordSetSet.add(PassWordSet.builder()
                 .password_id(UUID.randomUUID())
-                .passwords(password)
+                .passwords(password())
                 .users(userDtoToUsers(users))
                 .build());
 
