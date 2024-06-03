@@ -7,6 +7,7 @@ import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
 import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public interface IUserService {
@@ -41,7 +42,7 @@ public interface IUserService {
      **/
     ApiResponse deleteUserServiceByUserIdOrUserNameOrPrimaryEmail(final UUID userId,
                                                                   final String userName,
-                                                                  final String primaryEmail);
+                                                                  final String primaryEmail) throws IOException;
 
     /**
      * Fetch All Active users in DataBase

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+
 
 @RequestMapping("/api/users")
 public interface IUserController {
@@ -56,7 +58,7 @@ public interface IUserController {
     @DeleteMapping("/v1/delete")
     ResponseEntity<ApiResponse> deleteUserByUserIdOrUserNameOrPrimaryEmail(@RequestParam(value = "userId", required = false) final String userId,
                                                                            @RequestParam(value = "userName", required = false) final String userName,
-                                                                           @RequestParam(value = "primaryEmail", required = false) final String primaryEmail);
+                                                                           @RequestParam(value = "primaryEmail", required = false) final String primaryEmail) throws IOException;
 
     /**
      * Handles Fetch all users request from Client

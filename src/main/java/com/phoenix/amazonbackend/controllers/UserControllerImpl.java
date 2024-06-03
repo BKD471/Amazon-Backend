@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
+
+import java.io.IOException;
 import java.util.UUID;
 
 
@@ -46,7 +48,7 @@ public class UserControllerImpl implements IUserController {
     @Override
     public ResponseEntity<ApiResponse> deleteUserByUserIdOrUserNameOrPrimaryEmail(final String userId,
                                                                                   final String userName,
-                                                                                  final String primaryEmail) {
+                                                                                  final String primaryEmail) throws IOException {
         final ApiResponse response = userService
                 .deleteUserServiceByUserIdOrUserNameOrPrimaryEmail(
                         UUID.fromString(userId),
@@ -62,7 +64,8 @@ public class UserControllerImpl implements IUserController {
                                                                  final String sortBy,
                                                                  final String sortDir) {
         final PageableResponse<UserDto> userDtoSet = userService
-                .getAllUsers(pageNumber,
+                .getAllUsers(
+                        pageNumber,
                         pageSize,
                         sortBy,
                         sortDir
@@ -91,7 +94,8 @@ public class UserControllerImpl implements IUserController {
                                                                                final USER_FIELDS sortBy,
                                                                                final String sortDir) {
         final PageableResponse<UserDto> userDtoSet = userService
-                .searchUserByFieldAndValue(field,
+                .searchUserByFieldAndValue(
+                        field,
                         value,
                         pageNumber,
                         pageSize,
@@ -108,7 +112,8 @@ public class UserControllerImpl implements IUserController {
                                                                               final String sortBy,
                                                                               final String sortDir) {
         final PageableResponse<UserDto> userDtoSet = userService
-                .searchAllUsersByUserName(userNameWord,
+                .searchAllUsersByUserName(
+                        userNameWord,
                         pageNumber,
                         pageSize,
                         sortBy,
