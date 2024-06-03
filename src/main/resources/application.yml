@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: local
+  server:
+    port: 9090
+  application:
+    name: AmazonBackend
+  datasource:
+    url: jdbc:mysql://localhost:3306/amazon
+    username: root
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+---
+
+com:
+  phoenix:
+    amazonbackend:
+      userProfileImagePath: downloadable/images/users
+
