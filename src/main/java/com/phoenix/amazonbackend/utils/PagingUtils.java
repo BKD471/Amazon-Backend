@@ -9,11 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.phoenix.amazonbackend.dtos.requestDtos.UserDto.mapToUsersDto;
+import static com.phoenix.amazonbackend.dtos.requestDtos.UserDto.usersToUsersDto;
+import static com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.DestinationDtoType;
 
 
 public class PagingUtils {
-    public static <U, V> PageableResponse<U> getPageableResponse(final Page<V> page, final AllConstants.DestinationDtoType destinationDtoType) {
+    private PagingUtils(){
+        // Util Class, must not be instantiated
+    }
+    public static <U, V> PageableResponse<U> getPageableResponse(final Page<V> page, final DestinationDtoType destinationDtoType) {
         List<V> entityList = page.getContent();
         List<U> dtoList = new ArrayList<>();
 
@@ -21,7 +25,7 @@ public class PagingUtils {
             case USER_DTO -> {
                 if (!entityList.isEmpty() && entityList.getFirst() instanceof Users) {
                     dtoList = (List<U>) entityList.stream()
-                            .map(object -> mapToUsersDto((Users) object))
+                            .map(object -> usersToUsersDto((Users) object))
                             .collect(Collectors.toList());
                 }
             }

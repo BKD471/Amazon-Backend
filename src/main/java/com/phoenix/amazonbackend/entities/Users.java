@@ -1,7 +1,6 @@
 package com.phoenix.amazonbackend.entities;
 
 
-import com.phoenix.amazonbackend.utils.AllConstants;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.GENDER;
 
 
 @NoArgsConstructor
@@ -52,7 +53,7 @@ public class Users extends Audit {
     private String password;
 
     @Enumerated(value = EnumType.STRING)
-    private AllConstants.GENDER gender;
+    private GENDER gender;
 
     @Column(name = "user_image_name")
     private String profileImage;

@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @SuperBuilder
 @Getter
 @Setter
@@ -22,7 +24,8 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "user_password_set")
 public class PassWordSet extends Audit {
     @Id
-    private String password_id;
+    private UUID password_id;
+
     @Column(name = "Passwords", nullable = false)
     private String passwords;
 

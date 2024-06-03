@@ -2,12 +2,12 @@ package com.phoenix.amazonbackend.controllers;
 
 
 import com.phoenix.amazonbackend.dtos.requestDtos.PasswordUpdateDto;
-import com.phoenix.amazonbackend.dtos.requestDtos.UpdateUserDetailsDto;
+import com.phoenix.amazonbackend.dtos.requestDtos.UserDetailsDto;
 import com.phoenix.amazonbackend.dtos.requestDtos.UserDto;
 import com.phoenix.amazonbackend.dtos.responseDtos.ApiResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PageableResponse;
 import com.phoenix.amazonbackend.dtos.responseDtos.PasswordResponseMessages;
-import com.phoenix.amazonbackend.utils.AllConstants.USER_FIELDS;
+import com.phoenix.amazonbackend.utils.ApplicationConstantsUtils.USER_FIELDS;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public interface IUserController {
      * @return ResponseEntity<UserDto> - UserDto Object
      */
     @PutMapping("/v1/update")
-    ResponseEntity<UserDto> updateUserByUserIdOrUserNameOrPrimaryEmail(@RequestBody final UpdateUserDetailsDto user,
+    ResponseEntity<UserDto> updateUserByUserIdOrUserNameOrPrimaryEmail(@RequestBody final UserDetailsDto user,
                                                                        @RequestParam(value = "userId", required = false) final String userId,
                                                                        @RequestParam(value = "userName", required = false) final String userName,
                                                                        @RequestParam(value = "primaryEmail", required = false) final String primaryEmail);
@@ -132,7 +132,11 @@ public interface IUserController {
     @GetMapping("/v1/genPassword")
     ResponseEntity<PasswordResponseMessages> generatePassword();
 
-    /**
+
+    /*
+     * currently resetting password when password is lost is not developed
+     * you have to know your old password to reset it
+     * OTP/email based password resetting will be done later
      * Handles password reset request from Client
      *
      * @param passwordUpdateDto - object to update old password
