@@ -5,7 +5,6 @@ import com.phoenix.amazonbackend.entities.Users;
 import com.phoenix.amazonbackend.repository.IUserRepository;
 import lombok.AllArgsConstructor;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -17,8 +16,10 @@ public abstract class AbstractService {
                                                              final String userName,
                                                              final String primaryEmail) {
         return userRepository
-                .findByUserIdOrUserNameOrPrimaryEmail(userId,
+                .findByUserIdOrUserNameOrPrimaryEmail(
+                        userId,
                         userName,
-                        primaryEmail).get();
+                        primaryEmail
+                ).get();
     }
 }

@@ -1,8 +1,11 @@
+server:
+  port: 9090
+
+---
+
 spring:
   profiles:
     active: local
-  server:
-    port: 9090
   application:
     name: AmazonBackend
   datasource:

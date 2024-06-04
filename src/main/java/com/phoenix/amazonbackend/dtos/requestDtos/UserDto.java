@@ -2,6 +2,7 @@ package com.phoenix.amazonbackend.dtos.requestDtos;
 
 import com.phoenix.amazonbackend.entities.PassWordSet;
 import com.phoenix.amazonbackend.entities.Users;
+import io.micrometer.common.util.StringUtils;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -82,7 +83,11 @@ public record UserDto(String userId,
 
     public static Users userDtoToUsers(final UserDto userDto) {
         return Users.builder()
-                .userId(UUID.fromString(userDto.userId()))
+                .userId(
+                        StringUtils.isBlank(userDto.userId) ?
+                                null
+                                : UUID.fromString(userDto.userId())
+                )
                 .userName(userDto.userName())
                 .firstName(userDto.firstName())
                 .lastName(userDto.lastName())
